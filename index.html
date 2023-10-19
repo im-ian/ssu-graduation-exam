@@ -44,7 +44,10 @@
         <ul class="list-group list-group-flush">
           <li v-for="(question, index) in questions" class="list-group-item">
             <input v-if="type === 'separate'" type="checkbox" />
-            {{ `${index + 1}. ${question}` }}
+
+            <span v-if="type === 'one'">{{ question }}</span>
+            <span v-else>{{ `${index + 1}. ${question}` }}</span>
+
             <div class="mt-2">
               <textarea
                 class="form-control"

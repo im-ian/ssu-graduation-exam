@@ -1,2 +1,3 @@
 # ssu-graduation-exam
-SSU23 졸업고사
+[Link](https://im-ian.github.io/ssu-graduation-exam/index.html)https://im-ian.github.io/ssu-graduation-exam/index.html
+

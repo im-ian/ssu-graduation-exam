@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+      crossorigin="anonymous"
+    />
+    <title>SSU23 졸업고사</title>
+  </head>
+  <body>
+    <div id="app" style="padding: 10px">
+      <div class="text-center">
+        <div class="row">
+          <div class="col-10">
+            <select class="form-select" @change="handleChangeType">
+              <option>문제 유형 선택</option>
+              <option
+                v-for="selectType in selectTypes"
+                :value="selectType.value"
+              >
+                {{ selectType.label }}
+              </option>
+            </select>
+          </div>
+          <div class="col-2">
+            <button class="btn btn-light w-100" type="button" @click="">
+              다시 불러오기
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top: 10px">
+        <div class="card-header">문제</div>
+        <ul class="list-group list-group-flush">
+          <li v-for="(question, index) in questions" class="list-group-item">
+            <input v-if="type === 'separate'" type="checkbox" />
+            {{ `${index + 1}. ${question}` }}
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.7.14/dist/vue.js"></script>
+    <script>
+      const pool = [
+        "디지털 미디어 원리에서 빛이나 소리를 왜 파동으로 표현하려고 하는지 그 이유를 설명하시오.",
+        "눈은 색깔보다는 밝기에 민감하다고 하는데 그 이유는 무엇인가?",
+        "같은 신호를 표현하는데 시간 영역표현 방식과 주파수 영역 표현방식이 있다. 주파수 영역으로 표현하는데 사용된 퓨리에의 법칙은 무엇인가?",
+        "아날로그 신호의 디지털 변환 과정을 설명하시오.",
+        "나이퀘스트 이론(Nyquist Theorem)에 대해 구체적으로 설명하시오.",
+        "머신러닝에서의 과적합(Overfitting)에 대해 설명하고, 이를 해결하기 위한 방법에 대해 구체적으로 설명하시오.",
+        "CNN(Convolutional Neural Network) 모델에 대해서 DNN(Deep Nueral Network)과의 차이점을 가지고 구체적으로 설명하시오.",
+        "머신러닝의 알고리즘의 유형은 크게 지도 학습(Supervised learning), 비지도 학습(Unsupervised learning), 강화 학습(Reinforcement learning)으로 구분될 수 있다. 이에 3가지 유형에 대해 구체적으로 설명하시오.",
+
+        "마크 고베(Marc Gobe)가 밝힌 감성브랜딩의 다섯 가지 감성동인(Emotional deriver)을 관련 제품 및 서비스 사례를 들어 설명하시오.",
+        "번트 슈미트(Bernd H. Schm+itt)가 정리한 전략적 체험모듈(SEMs)을 바탕으로 현대 광고가 소비자에게 어떤 체험을 제공하고 있는지 설명하시오.",
+        "더블 다이아몬드(Double Diamond) 프로세스에 대해 구체적으로 설명하시오.",
+        "사용자(고객) 여정 지도에 대해 구체적으로 설명하시오.",
+        "페르소나(퍼소나, Persona)에 대해 설명하시오.",
+        "존 듀이(John Dewey)는 그의 저서 Art as Experience에서 진정한 경험(real experience)에 대해 설명하고 있다. 존 듀이가 말하는 진정한 경험에 대해 구체적으로 논하시오.",
+        "UX를 6가지 계층으로 구성함으로서 UX를 체계적으로 바라볼 수 있게 해주는 UX 피라미드에 대해 구체적으로 설명하시오.",
+        "UX의 심리학 법칙 중 ‘밀러의 법칙(Miller’s Law)’을 정의하고, 현재 모바일 App. 을 들어 구체적으로 설명하시오.",
+
+        "4차 산업혁명이 가져온 ‘초연결(hyper-connectivity)’은 연결된 고객 집단으로 힘 을 이동시키는 현상을 나타내고 있다. 이러한 힘의 이동에 대한 세 가지 변화에 대 해 설명하시오.",
+        "롱테일(The Long Tail) 법칙과 파레토(Pareto) 법칙에 대해 설명하시오.",
+        "클레이튼 크리스텐슨(Clayton Christensen)은 그의 저서 “혁신기업의 딜레마(The Innovator’s Delemma)”와“성장과 혁신(The Innovator’s Solution)”에서 파괴적 혁신 (disruptive innovation)을 언급하고 있다. 파괴적 혁신에 대해 간략하게 설명하시오.",
+        "필립 코틀러(Pilip Kotler)는 4차 산업혁명과 궤를 같이 하는 시장의 새로운 변화 와 기업의 생존 전략으로 “마켓 4.0(Market-ing 4.0)”을 주장하고 있다. 이러한 마켓 4.0 따른 새로운 네 가지 마케팅 믹스(marketing mix)에 대해 설명하시오.",
+        "최근 엠비언트 미디어(ambient media)는 새로운 광고의 대안으로 고려되고 있다. 이러한 엠비언트 미디어의 특성을 설명하시오.",
+        "인공지능(Artificial Intelligence)이 마케팅(광고)에 적용된 사례를 설명하고 전통적 마케팅과의 차이점에 대해 논하시오.",
+        "옴니채널(Omni Channel) 마케팅의 정의 및 전략을 구체적으로 논하시오.",
+        "O2O(Online to Offline) 서비스에 대해 정의하고 사례를 들어 구체적으로 설명하시오.",
+      ];
+
+      const vApp = new Vue({
+        el: "#app",
+        data() {
+          return {
+            type: "all", // all, separate, one
+            questions: [],
+            selectQuestions: [],
+            selectTypes: [
+              { label: "모든 문제 출력", value: "all" },
+              { label: "9개만 출력", value: "separate" },
+              { label: "한 문제 출력", value: "one" },
+            ],
+          };
+        },
+        methods: {
+          getRandomQuestion(length) {
+            const randomQuestions = [...pool].sort(() => 0.5 - Math.random());
+            return randomQuestions.slice(0, length);
+          },
+          handleChangeType(e) {
+            const type = e.target.value;
+
+            this.type = type;
+
+            if (type === "all") {
+              this.questions = pool;
+            } else if (type === "separate") {
+              this.questions = this.getRandomQuestion(9);
+            } else {
+              this.questions = this.getRandomQuestion(1);
+            }
+          },
+          handleReload() {
+            this.handleChangeType(this.type);
+          },
+        },
+      });
+    </script>
+  </body>
+</html>

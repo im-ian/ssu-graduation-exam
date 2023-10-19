@@ -28,7 +28,11 @@
             </select>
           </div>
           <div class="col-2">
-            <button class="btn btn-light w-100" type="button" @click="">
+            <button
+              class="btn btn-light w-100"
+              type="button"
+              @click="handleReload"
+            >
               다시 불러오기
             </button>
           </div>
@@ -117,7 +121,11 @@
             }
           },
           handleReload() {
-            this.handleChangeType(this.type);
+            if (this.type === "separate") {
+              this.questions = this.getRandomQuestion(9);
+            } else if (this.type === "one") {
+              this.questions = this.getRandomQuestion(1);
+            }
           },
         },
       });

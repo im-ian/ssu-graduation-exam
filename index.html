@@ -115,25 +115,27 @@
             const randomQuestions = [...pool].sort(() => 0.5 - Math.random());
             return randomQuestions.slice(0, length);
           },
+          setQuestions(type) {
+            this.questions = [];
+
+            this.$nextTick(() => {
+              if (type === "all") {
+                this.questions = pool;
+              } else if (type === "separate") {
+                this.questions = this.getRandomQuestion(9);
+              } else {
+                this.questions = this.getRandomQuestion(1);
+              }
+            });
+          },
           handleChangeType(e) {
             const type = e.target.value;
 
             this.type = type;
-
-            if (type === "all") {
-              this.questions = pool;
-            } else if (type === "separate") {
-              this.questions = this.getRandomQuestion(9);
-            } else {
-              this.questions = this.getRandomQuestion(1);
-            }
+            this.setQuestions(type);
           },
           handleReload() {
-            if (this.type === "separate") {
-              this.questions = this.getRandomQuestion(9);
-            } else if (this.type === "one") {
-              this.questions = this.getRandomQuestion(1);
-            }
+            this.setQuestions(this.type);
           },
         },
       });
